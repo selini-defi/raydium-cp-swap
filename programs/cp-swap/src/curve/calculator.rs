@@ -109,7 +109,7 @@ impl CurveCalculator {
             source_amount_less_fees,
             swap_source_amount,
             swap_destination_amount,
-        );
+        )?;
 
         Some(SwapResult {
             new_swap_source_amount: swap_source_amount.checked_add(source_amount)?,
@@ -135,7 +135,7 @@ impl CurveCalculator {
             destinsation_amount,
             swap_source_amount,
             swap_destination_amount,
-        );
+        )?;
 
         let source_amount =
             Fees::calculate_pre_fee_amount(source_amount_swapped, trade_fee_rate).unwrap();
@@ -221,7 +221,7 @@ pub mod test {
             source_token_amount,
             swap_source_amount,
             swap_destination_amount,
-        );
+        ).unwrap();
 
         let (swap_token_0_amount, swap_token_1_amount) = match trade_direction {
             TradeDirection::ZeroForOne => (swap_source_amount, swap_destination_amount),

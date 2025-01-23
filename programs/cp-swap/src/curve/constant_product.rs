@@ -20,28 +20,27 @@ impl ConstantProductCurve {
         source_amount: u128,
         swap_source_amount: u128,
         swap_destination_amount: u128,
-    ) -> u128 {
+    ) -> Option<u128> {
         // (x + delta_x) * (y - delta_y) = x * y
         // delta_y = (delta_x * y) / (x + delta_x)
-        let numerator = source_amount.checked_mul(swap_destination_amount).unwrap();
-        let denominator = swap_source_amount.checked_add(source_amount).unwrap();
-        let destinsation_amount_swapped = numerator.checked_div(denominator).unwrap();
-        destinsation_amount_swapped
+        let numerator = source_amount.checked_mul(swap_destination_amount)?;
+        let denominator = swap_source_amount.checked_add(source_amount)?;
+        let destinsation_amount_swapped = numerator.checked_div(denominator)?;
+        Some(destinsation_amount_swapped)
     }
 
     pub fn swap_base_output_without_fees(
         destinsation_amount: u128,
         swap_source_amount: u128,
         swap_destination_amount: u128,
-    ) -> u128 {
+    ) -> Option<u128> {
         // (x + delta_x) * (y - delta_y) = x * y
         // delta_x = (x * delta_y) / (y - delta_y)
-        let numerator = swap_source_amount.checked_mul(destinsation_amount).unwrap();
+        let numerator = swap_source_amount.checked_mul(destinsation_amount)?;
         let denominator = swap_destination_amount
-            .checked_sub(destinsation_amount)
-            .unwrap();
-        let (source_amount_swapped, _) = numerator.checked_ceil_div(denominator).unwrap();
-        source_amount_swapped
+            .checked_sub(destinsation_amount)?;
+        let (source_amount_swapped, _) = numerator.checked_ceil_div(denominator)?;
+        Some(source_amount_swapped)
     }
 
     /// Get the amount of trading tokens for the given amount of pool tokens,
@@ -165,7 +164,7 @@ mod tests {
             source_amount,
             swap_source_amount,
             swap_destination_amount,
-        );
+        ).unwrap();
         assert_eq!(source_amount, expected_source_amount_swapped);
         assert_eq!(
             destination_amount_swapped,
