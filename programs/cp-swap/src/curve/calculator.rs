@@ -138,7 +138,7 @@ impl CurveCalculator {
         )?;
 
         let source_amount =
-            Fees::calculate_pre_fee_amount(source_amount_swapped, trade_fee_rate).unwrap();
+            Fees::calculate_pre_fee_amount(source_amount_swapped, trade_fee_rate)?;
         let trade_fee = Fees::trading_fee(source_amount, trade_fee_rate)?;
         let protocol_fee = Fees::protocol_fee(trade_fee, protocol_fee_rate)?;
         let fund_fee = Fees::fund_fee(trade_fee, fund_fee_rate)?;
